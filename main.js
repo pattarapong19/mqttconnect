@@ -26,7 +26,7 @@ const  senddata = () => {
     client.on('message', function (headSendTopic, message) {
         
         let res = JSON.parse(message.toString())
-        
+        console.log(res);
      /*   if(res.e=='ck')
          {
             ReadFile(res)
