@@ -8,17 +8,18 @@ const { ckxlsx } = require('./ckxlsx');
 const { readfile } = require('./readfile');
 const { writeOPC, readOPC } = require('./opcConnect');
 const { readModbus, writeModbusData } = require('./modbusConnect');
-
+require('dotenv').config();
 // สร้างการเชื่อมต่อ MQTT นอกจากฟังก์ชั่น readFile
+ 
 var options = {
-    host: '103.207.71.56',
-    port: 1883,  // ใช้พอร์ต MQTT ที่ไม่ได้เข้ารหัสแบบเพิ่มเติม
+    host: process.env.MQTT_HOST,
+    port: process.env.MQTT_PORT,  // ใช้พอร์ต MQTT ที่ไม่ได้เข้ารหัสแบบเพิ่มเติม
     protocol: 'mqtt',  // เปลี่ยนโปรโตคอลเป็น 'mqtt'
-    username: 'saw',
-    password: '123456'
+    username: process.env.MQTT_USER,
+    password: process.env.MQTT_PASSWORD
 }
-const ipM = '192.168.1.16';
-const portM = 502;
+const ipM = process.env.IP_MODBUS;
+const portM = process.env.PORT_MODBUS;
 //initialize the MQTT client
 var client = mqtt.connect(options);
 let deg = 50;
