@@ -26,22 +26,30 @@ const  senddata = () => {
     client.on('message', function (headSendTopic, message) {
         
         let res = JSON.parse(message.toString())
-        console.log(res);
-     /*   if(res.e=='ck')
+
+      if(res.e=='ck')
          {
-            ReadFile(res)
+           ReadFile(res)
          }
         else{
             try {
-                ckxlsx(res.a).then((rev) => {
+                 ckxlsx(res.a).then((rev) => {
                     if(res.e == 'ed') {
-                        WriteFile(res);
+                        WriteFile(res).then((resove)=>{PublicMQTT(res.v,headSendTopic)}).catch((err)=>{console.log(err)})
                     } else {
-                        xlxsfile(res);
+                      /*  xlxsfile(res).then((resove)=>{
+                                                        PublicMQTT(res.v,headSendTopic)
+                                                        console.log(resove);
+                                                    }).catch((err)=>{console.log(err)});*/
+                        createxlsx(res).then((resove)=>{
+                                                            PublicMQTT(res.v,headSendTopic)
+                                                            console.log(resove);
+                                                        }).catch((err)=>{console.log(err)});
+                          
                     }
                 }).catch((err) => {
                     if(err == -1) {
-                        xlxsfile(res);
+                        xlxsfile(res).then((resove)=>{PublicMQTT(res.v,headSendTopic)}).catch((err)=>{console.log(err)});
                         
                     } else {
                         console.log(err);
@@ -52,16 +60,10 @@ const  senddata = () => {
               
             }
         }
-       */ 
-      
-        /*if(headSendTopic =='temp/1' && res>50)
-         {
-            console.log("warnning!!" + headSendTopic + " > 50  value is " + message.toString());
-            client.publish("vol/1",res.toString())
-            var nowdate = moment().format('YYYY-MM-DD HH:mm:ss')
-           // xlxsfile(nowdate,res)        
-         }*/
+    
 
+      
+     
     })
     
    
@@ -81,6 +83,7 @@ client.subscribe('#');
 
 const xlxsfile = async (nowdate)=>{
     await createxlsx(nowdate).then((revsove)=>{console.log(revsove);}).catch((err)=>{console.log(err);})
+    
 }
 const WriteFile = async (datajson)=>{
     await writeFile(datajson).then((revsove)=>{console.log(revsove);}).catch((err)=>{console.log(err);})
@@ -90,5 +93,21 @@ const ReadFile =async (datajson)=>{
     await readfile(datajson).then((res)=>console.log(res)).catch((err)=>console.log(err))
 }
 
+const PublicMQTT=(data,headSendTopic)=>{
+    return new Promise((resolve, reject) => {
+        if(headSendTopic =='temp/1' && data>50)
+        {
+          
+            client.publish("vol/1",data.toString())
+            resolve("warnning!!" + headSendTopic + " > 50  value is " + data.toString());
+
+       
+        }else
+            {
+                reject('Error cat not sand data')
+            }
+    })
+
+}
 // เรียกใช้ฟังก์ชั่นอ่านไฟล์
 senddata()
