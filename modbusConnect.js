@@ -13,7 +13,7 @@ async function writeModbusData(ip,port,offset,dataToWrite) {
         
         await client.connectTCP(ip, { port });
         await client.writeRegisters(offset, dataToWrite);
-        console.log('Data written successfully to Modbus:', dataToWrite);
+        console.log("Change PLC Value Number :",offset,'Data written successfully to Modbus:', dataToWrite);
         // ส่งค่า true แสดงว่าเขียนข้อมูลเสร็จสิ้น
         
     } catch (error) {
@@ -43,10 +43,29 @@ async function readModbus(ip, port,resV) {
     }
 }
 
+const readAllModbus = async(ipM, portM,offsetV,Ndata)=> {
+    const client = new ModbusRTU();
 
+    try {
+        // เชื่อมต่อกับอุปกรณ์ Modbus TCP/IP
+        await client.connectTCP(ipM, { portM });
+        // อ่านค่า Modbus จากอุปกรณ์ที่อยู่ที่ออฟเซ็ต 5
+        const response = await client.readHoldingRegisters(offsetV, Ndata);
+        return response.data;
+    } catch (err) {
+        console.error('Read Error:', err);
+        return null;
+    } finally {
+        // ปิดการเชื่อมต่อเมื่อเสร็จสิ้น
+        client.close(() => {
+            console.log('Disconnected from Modbus TCP/IP');
+        });
+    }
+}
 
 
 module.exports = {
     readModbus: readModbus,
-    writeModbusData: writeModbusData
+    writeModbusData: writeModbusData,
+    readAllModbus:readAllModbus
 };

@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon main2.js"
+    "dev": "nodemon main3.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.4",
+    "lodash": "^4.17.21",
     "modbus-serial": "^8.0.16",
     "moment": "^2.30.1",
     "mqtt": "^4.3.7",
