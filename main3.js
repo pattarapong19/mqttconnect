@@ -63,6 +63,8 @@ const senddata = () => {
                 }else if(plc=='allplc1'){ 
                     newArray = _.fill(new Array(max_PLC-1), 1);
                     writeModbusData(ipM,portM,1,newArray)                           
+        }else{
+            reject('error not plc')
         }              
         });
         setTimeout(() => {
@@ -85,14 +87,3 @@ client.subscribe('#');
 
 // เรียกใช้ฟังก์ชั่นอ่านไฟล์
 senddata().then((res)=>console.log(res)).catch(err=>console.log(err))
-setInterval(() => {
-    readAllModbus(ipM,portM,0,max_PLC).then((res)=>{
-        for (let index = 0; index < res.length; index++) {
-            const element = res[index];
-            const plcN = index+1
-            client.publish("resplc/"+plcN.toString(),element.toString())
-        }
-    }).catch((err)=>{
-        console.log(err);
-    })
-}, 5000);
